@@ -1,0 +1,17 @@
+{
+    "name": "guerco/api-paraprolim",
+    "description": "Api Paraprolim",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Guerco\\ApiParaprolim\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Gabriel Guerço",
+            "email": "gabrielszgrco@gmail.com"
+        }
+    ],
+    "require": {}
+}
