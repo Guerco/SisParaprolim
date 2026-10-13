@@ -1,0 +1,35 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Contracts\Service;
+use App\Models\{{ model }};
+use Illuminate\Foundation\Http\FormRequest;
+
+class {{ class }}
+{
+    public function getAll()
+    {
+        //
+    }
+
+    public function findById($id)
+    {
+        //
+    }
+
+    public function create(FormRequest $request)
+    {
+        //
+    }
+
+    public function edit(FormRequest $request, $id)
+    {
+        //
+    }
+
+    public function remove($id)
+    {
+        //
+    }
+}
