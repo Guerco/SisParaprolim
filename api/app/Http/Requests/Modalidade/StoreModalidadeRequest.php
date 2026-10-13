@@ -22,7 +22,7 @@ class StoreModalidadeRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'nome' => trim($this->nome ?? ''),
+            'nome' => ucwords(trim($this->nome ?? '')),
         ]);
     }
 
@@ -33,7 +33,7 @@ class StoreModalidadeRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route('modalidade')?->id;
+        $id = $this->route('modalidade');
 
         $regras = [
             'nome' => [
