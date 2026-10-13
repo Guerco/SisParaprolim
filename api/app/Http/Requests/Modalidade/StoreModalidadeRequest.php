@@ -22,7 +22,7 @@ class StoreModalidadeRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'nome' => ucwords(trim($this->nome ?? '')),
+            'nome' => trim($this->nome ?? ''),
         ]);
     }
 

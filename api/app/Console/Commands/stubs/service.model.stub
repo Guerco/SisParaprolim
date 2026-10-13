@@ -2,7 +2,6 @@
 
 namespace {{ namespace }};
 
-use App\Contracts\Service;
 use App\Models\{{ model }};
 use Illuminate\Foundation\Http\FormRequest;
 

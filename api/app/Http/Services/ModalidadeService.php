@@ -4,7 +4,7 @@ namespace App\Http\Services;
 
 use App\Contracts\Service;
 use App\Http\Requests\Modalidade\StoreModalidadeRequest;
-use App\Http\Resources\Modalidade\ModalidadeResumoResource;
+use App\Http\Resources\Modalidade\ModalidadeResource;
 use App\Models\Modalidade;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
@@ -30,13 +30,13 @@ class ModalidadeService
             ->paginate($perPage)
             ->withQueryString();
 
-        return ModalidadeResumoResource::collection($modalidades);
+        return ModalidadeResource::collection($modalidades);
     }
 
     public function findById($id)
     {
         $modalidade = Modalidade::findOrFail($id);
-        return new ModalidadeResumoResource($modalidade);
+        return new ModalidadeResource($modalidade);
     }
 
     public function create(StoreModalidadeRequest $request)

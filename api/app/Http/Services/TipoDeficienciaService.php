@@ -7,7 +7,7 @@ use App\Http\Requests\TipoDeficiencia\StoreTipoDeficienciaRequest;
 use App\Http\Requests\TipoDeficiencia\UpdateTipoDeficienciaRequest;
 use App\Models\TipoDeficiencia;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Resources\TipoDeficiencia\TipoDeficienciaResumoResource;
+use App\Http\Resources\TipoDeficiencia\TipoDeficienciaResource;
 use Illuminate\Http\Request;
 
 class TipoDeficienciaService
@@ -18,13 +18,13 @@ class TipoDeficienciaService
         $perPage = min(max($perPage, 1), 100);
         
         $tipos_deficiencias = TipoDeficiencia::paginate($perPage)->withQueryString();
-        return TipoDeficienciaResumoResource::collection($tipos_deficiencias);
+        return TipoDeficienciaResource::collection($tipos_deficiencias);
     }
 
     public function findById($id)
     {
         $tipo_deficiencia = TipoDeficiencia::findOrFail($id);
-        return new TipoDeficienciaResumoResource($tipo_deficiencia);
+        return new TipoDeficienciaResource($tipo_deficiencia);
     }
 
     public function create(StoreTipoDeficienciaRequest $request)

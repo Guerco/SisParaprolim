@@ -28,7 +28,7 @@ class UpdateTipoDeficienciaRequest extends FormRequest
         }
 
         if ($this->has('descricao')) {
-            $dados['descricao'] = ucwords(trim($this->descricao ?? ''));
+            $dados['descricao'] = trim($this->descricao ?? '');
         }
 
         $this->merge($dados);

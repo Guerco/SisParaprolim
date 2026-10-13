@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tipos_deficiencias', function (Blueprint $table) {
             $table->id();
-            $table->string('tipo', 2)->unique();
+            $table->char('tipo', 2)->unique();
             $table->string('descricao', 100)->unique();
             // $table->timestamps();
         });

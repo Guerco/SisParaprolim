@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CepController;
 use App\Http\Controllers\Api\ModalidadeController;
 use App\Http\Controllers\Api\TipoDeficienciaController;
 use Illuminate\Http\Request;
@@ -16,6 +17,13 @@ Route::apiResource('modalidades', ModalidadeController::class)->except([
 ]);
 
 Route::apiResource('tipos-deficiencias', TipoDeficienciaController::class)->except([
+    'create', 
+    // 'show', 
+    'edit',
+]);
+
+Route::get('ceps/buscar/{cep}', [CepController::class, 'showCep']);
+Route::apiResource('ceps', CepController::class)->except([
     'create', 
     // 'show', 
     'edit',
