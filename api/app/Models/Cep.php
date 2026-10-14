@@ -9,7 +9,6 @@ class Cep extends Model
     protected $table = 'ceps';
 
     protected $fillable = [
-        'id',
         'cep',
         'logradouro',
         'bairro',

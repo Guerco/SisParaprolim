@@ -55,4 +55,12 @@ class TipoDeficienciaController extends CrudController
     {
         return parent::_destroy( $id );
     }
+
+    /**
+     * Display a listing of the resource's related deficiencias.
+     */
+    public function deficiencias(Request $request, $id)
+    {
+        return $this->service->getDeficienciasById($request, $id);
+    }
 }

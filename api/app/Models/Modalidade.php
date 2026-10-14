@@ -9,7 +9,6 @@ class Modalidade extends Model
     protected $table = 'modalidades';
 
     protected $fillable = [
-        'id',
         'nome',
     ];
 
