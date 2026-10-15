@@ -52,4 +52,12 @@ class ModalidadeController extends CrudController
     {
         return parent::_destroy( $id );
     }
+
+    /**
+     * Display a listing of the resource's related atletas.
+     */
+    public function atletas(Request $request, $modalidade)
+    {
+        return $this->service->getAtletasByModalidade($request, $modalidade);
+    }
 }

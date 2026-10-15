@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Deficiencia extends Model
 {
@@ -21,5 +22,11 @@ class Deficiencia extends Model
             TipoDeficiencia::class,
             'tipo_deficiencia_id'
         );
+    }
+
+    public function atletas(): BelongsToMany
+    {
+        return $this->belongsToMany(Atleta::class, 'atletas_deficiencias')
+            ->withPivot('possui_laudo');
     }
 }

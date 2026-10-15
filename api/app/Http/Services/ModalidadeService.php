@@ -4,6 +4,9 @@ namespace App\Http\Services;
 
 use App\Contracts\Service;
 use App\Http\Requests\Modalidade\StoreModalidadeRequest;
+use App\Http\Resources\Atleta\AtletaListagemResource;
+// use App\Http\Resources\Atleta\AtletaResource;
+use App\Http\Resources\Atleta\AtletaResource;
 use App\Http\Resources\Modalidade\ModalidadeResource;
 use App\Models\Modalidade;
 use Illuminate\Foundation\Http\FormRequest;
@@ -54,5 +57,23 @@ class ModalidadeService
     {
         $modalidade = Modalidade::findOrFail($id);
         $modalidade->delete();
+    }
+
+    public function getAtletasByModalidade(Request $request, $modalidade)
+    {
+        $perPage = (int) $request->input('por_pag', 15);
+        $perPage = min(max($perPage, 1), 100);
+
+        $modalidade = Modalidade::findOrFail($modalidade);
+
+        $atletas = $modalidade->atletas()
+            // Lista apenas os atletas ativos da modalidade.
+            ->where('esta_ativo', true)
+            // ->with(['atletaModalidades.modalidade'])
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return AtletaListagemResource::collection($atletas);
+        // return AtletaResource::collection($atletas);
     }
 }

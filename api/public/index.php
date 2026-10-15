@@ -1,5 +1,12 @@
 <?php
 
+// =====================================================
+
+//          Clube de Regatas Vasco da Gama
+
+// =====================================================
+
+
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 

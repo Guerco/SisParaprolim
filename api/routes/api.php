@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AtletaController;
 use App\Http\Controllers\Api\CepController;
 use App\Http\Controllers\Api\DeficienciaController;
 use App\Http\Controllers\Api\ModalidadeController;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
+Route::get('modalidades/{modalidade}/atletas', [ModalidadeController::class, 'atletas']);
 Route::apiResource('modalidades', ModalidadeController::class)->except([
     'create', 
     // 'show', 
@@ -31,7 +33,14 @@ Route::apiResource('ceps', CepController::class)->except([
     'edit',
 ]);
 
+Route::get('deficiencias/{deficiencia}/atletas', [DeficienciaController::class, 'atletas']);
 Route::apiResource('deficiencias', DeficienciaController::class)->except([
+    'create', 
+    // 'show', 
+    'edit',
+]);
+
+Route::apiResource('atletas', AtletaController::class)->except([
     'create', 
     // 'show', 
     'edit',

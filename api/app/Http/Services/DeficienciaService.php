@@ -4,6 +4,8 @@ namespace App\Http\Services;
 
 use App\Http\Requests\Deficiencia\StoreDeficienciaRequest;
 use App\Http\Requests\Deficiencia\UpdateDeficienciaRequest;
+use App\Http\Resources\Atleta\AtletaListagemResource;
+use App\Http\Resources\Atleta\AtletaResource;
 use App\Http\Resources\Deficiencia\DeficienciaListagemResource;
 use App\Http\Resources\Deficiencia\DeficienciaResource;
 use App\Models\Deficiencia;
@@ -54,5 +56,23 @@ class DeficienciaService
     {
         $deficiencia = Deficiencia::findOrFail($id);
         $deficiencia->delete();
+    }
+
+    public function getAtletasByDeficiencia(Request $request, $deficiencia)
+    {
+        $perPage = (int) $request->input('por_pag', 15);
+        $perPage = min(max($perPage, 1), 100);
+
+        $deficiencia = Deficiencia::findOrFail($deficiencia);
+
+        $atletas = $deficiencia->atletas()
+            // Lista apenas os atletas ativos da modalidade.
+            ->where('esta_ativo', true)
+            ->with(['atletaDeficiencias.deficiencia'])
+            ->paginate($perPage)
+            ->withQueryString();
+
+        // return AtletaListagemResource::collection($atlsetas);
+        return AtletaResource::collection($atletas);
     }
 }

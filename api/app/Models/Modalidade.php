@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 
 class Modalidade extends Model
 {
@@ -13,4 +15,10 @@ class Modalidade extends Model
     ];
 
     public $timestamps = false;
+
+    public function atletas(): BelongsToMany
+    {
+        return $this->belongsToMany(Atleta::class, 'atletas_modalidades')
+            ->withPivot('classe', 'validade_atestado');
+    }
 }

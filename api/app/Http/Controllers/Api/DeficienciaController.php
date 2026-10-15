@@ -55,4 +55,12 @@ class DeficienciaController extends CrudController
     {
         return parent::_destroy( $id );
     }
+
+    /**
+     * Display a listing of the resource's related atletas.
+     */
+    public function atletas(Request $request, $deficiencia)
+    {
+        return $this->service->getAtletasByDeficiencia($request, $deficiencia);
+    }
 }

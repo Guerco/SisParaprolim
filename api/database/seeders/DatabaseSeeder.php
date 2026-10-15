@@ -27,5 +27,11 @@ class DatabaseSeeder extends Seeder
             ModalidadeSeeder::class,
             CepSeeder::class,
         ]);
+
+        if (env('DADOS_FICTICIOS', false)) {
+            $this->call([
+                AtletaSeeder::class,
+            ]);
+        }
     }
 }

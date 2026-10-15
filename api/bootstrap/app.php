@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -61,4 +62,18 @@ return Application::configure(basePath: dirname(__DIR__))
                 JSON_PRETTY_PRINT
             );
         });
+
+        $exceptions->render(function (QueryException $e, $request) {
+        if (! $request->is('api/*')) {
+            return null;
+        }
+
+        if ($e->getCode() === '23000') {
+            return response()->json([
+                'message' => 'Não foi possível concluir a operação porque o registro está vinculado a outros registros.',
+            ], 409);
+        }
+
+        return null;
+    });
     })->create();
