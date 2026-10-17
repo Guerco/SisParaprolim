@@ -4,22 +4,29 @@ namespace App\Http\Services;
 
 use App\Http\Requests\Atleta\StoreAtletaRequest;
 use App\Http\Requests\Atleta\UpdateAtletaRequest;
+use App\Http\Resources\Atleta\AtletaListagemConfig;
 use App\Http\Resources\Atleta\AtletaListagemResource;
 use App\Http\Resources\Atleta\AtletaResource;
 use App\Models\Atleta;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AtletaService
 {
+    // =========================================================================
+    // Listagem, Busca, Filtros e Ordenação
+    // =========================================================================
+
     public function getAll(Request $request)
     {
         $perPage = (int) $request->input('por_pag', 15);
         $perPage = min(max($perPage, 1), 100);
 
-        $atletas = $this->aplicarFiltrosGetAll(Atleta::query(), $request)
-            ->with(['atletaDeficiencias', 'atletaModalidades'])
+        $query = $this->aplicarFiltrosGetAll(Atleta::query(), $request);
+        $query = $this->aplicarOrdenacaoGetAll($query, $request);
+
+        $atletas = $query
+            // ->with(['atletaDeficiencias', 'atletaModalidades'])
             ->paginate($perPage)
             ->withQueryString();
 
@@ -29,27 +36,70 @@ class AtletaService
     private function aplicarFiltrosGetAll($query, Request $request)
     {
         $busca = trim((string) $request->input('busca', ''));
-        $estaAtivo = $request->query('esta_ativo');
 
-        $estaAtivo = in_array($estaAtivo, ['true', 'false'], true)
-            ? filter_var($estaAtivo, FILTER_VALIDATE_BOOLEAN)
-            : null;
+        $filtros = AtletaListagemConfig::filtraveis();
 
-        return $query
-            ->when(
-                $estaAtivo !== null,
-                fn ($q) => $q->where('esta_ativo', $estaAtivo)
-            )
-            ->when(
-                $busca !== '',
-                fn ($q) => $q->where(function ($q) use ($busca) {
-                    $termo = '%' . addcslashes($busca, '%_\\') . '%';
-                    $q->where('nome', 'like', $termo)
-                    ->orWhere('cpf', 'like', $termo)
-                    ->orWhere('num_cad', 'like', $termo);
-                })
-            );
+        // Aplica os filtros dinamicamente
+        foreach ($filtros as $campo => $config) {
+            $valor = $request->query($campo);
+
+            if ($valor === null) {
+                continue; // Ignora se não foi enviado
+            }
+
+            if ($config['tipo'] === 'boolean') {
+                $valorBooleano = in_array($valor, ['true', 'false'], true)
+                    ? filter_var($valor, FILTER_VALIDATE_BOOLEAN)
+                    : null;
+
+                if ($valorBooleano !== null) {
+                    $query->where($campo, $valorBooleano);
+                }
+            }
+
+            if ($config['tipo'] === 'enum') {
+                if (in_array($valor, $config['opcoes'], true)) {
+                    $query->where($campo, $valor);
+                }
+            }
+        }
+
+        // Aplica a busca com base nos campos definidos no Config
+        $camposBusca = AtletaListagemConfig::buscaveis();
+
+        return $query->when(
+            $busca !== '' && !empty($camposBusca),
+            fn($q) => $q->where(function ($q) use ($busca, $camposBusca) {
+                $termo = '%' . addcslashes($busca, '%_\\') . '%';
+                
+                foreach ($camposBusca as $indice => $campo) {
+                    if ($indice === 0) {
+                        $q->where($campo, 'like', $termo);
+                    } else {
+                        $q->orWhere($campo, 'like', $termo);
+                    }
+                }
+            })
+        );
     }
+
+    private function aplicarOrdenacaoGetAll($query, Request $request)
+    {
+        $campo = $request->query('ordenar_por');
+        $direcao = $request->query('direcao', 'asc') === 'desc' ? 'desc' : 'asc';
+
+        if ($campo && in_array($campo, AtletaListagemConfig::ordenaveis())) {
+            return $query->orderBy($campo, $direcao);
+        }
+
+        $padrao = AtletaListagemConfig::ordenacaoPadrao();
+
+        return $query->orderBy($padrao['campo'], $padrao['direcao']);
+    }
+
+    // =========================================================================
+    // Detalhes (Show)
+    // =========================================================================
 
     public function findById($id)
     {
@@ -59,6 +109,9 @@ class AtletaService
         return new AtletaResource($atleta);
     }
 
+    // =========================================================================
+    // Cadastro (Store)
+    // =========================================================================
 
     public function create(StoreAtletaRequest $request)
     {
@@ -89,6 +142,10 @@ class AtletaService
             }
         });
     }
+
+    // =========================================================================
+    // Edição (Update)
+    // =========================================================================
 
     public function edit(UpdateAtletaRequest $request, $id)
     {
@@ -124,6 +181,10 @@ class AtletaService
             }
         });
     }
+
+    // =========================================================================
+    // Exclusão (Destroy)
+    // =========================================================================
 
     public function remove($id)
     {

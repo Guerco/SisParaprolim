@@ -48,14 +48,14 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (ValidationException $e, $request) {
-            if (! $request->is('api/*')) {
+            if (!$request->is('api/*')) {
                 return null;
             }
 
             return response()->json(
                 [
                     'message' => 'Dados inválidos.',
-                    'errors'  => $e->errors(),
+                    'errors' => $e->errors(),
                 ],
                 422,
                 [],
@@ -64,16 +64,28 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (QueryException $e, $request) {
-        if (! $request->is('api/*')) {
+            if (!$request->is('api/*')) {
+                return null;
+            }
+
+            if ($e->getPrevious() instanceof \PDOException) {
+                $pdoCode = $e->getPrevious()->getCode();
+                
+                // Erros de conexão genéricos
+                if (in_array($pdoCode, ['08006', '08001']) || str_contains($e->getMessage(), '2002')) {
+                    return response()->json(['message' => 'Não foi possível conectar ao banco de dados.'], 503);
+                }
+            }
+
+            if ($e->getCode() === '23000') {
+                return response()->json(
+                    ['message' => 'Não foi possível concluir a operação porque o registro está vinculado a outros registros.'],
+                    409,
+                    [],
+                    JSON_PRETTY_PRINT
+                );
+            }
+
             return null;
-        }
-
-        if ($e->getCode() === '23000') {
-            return response()->json([
-                'message' => 'Não foi possível concluir a operação porque o registro está vinculado a outros registros.',
-            ], 409);
-        }
-
-        return null;
-    });
+        });
     })->create();
