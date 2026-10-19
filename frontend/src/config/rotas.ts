@@ -1,54 +1,186 @@
-const BASE_URL_API = 'http://localhost:8080/';
-const BASE_URL_JSON_SERVER = 'http://localhost:3000/';
-const BASE_URL_WEB = 'http://localhost:5173/';
+export enum MetodoHttp {
+    GET = 'GET',
+    POST = 'POST',
+    PUT = 'PUT',
+    DELETE = 'DELETE',
+}
+
+const BASE_URL_API = '/api/';
+
+const POR_PAG_PADRAO = 20;
+const PAGE_PADRAO = 1;
+
+export type ParamsBusca = {
+    por_pag?: number;
+    page?: number;
+    busca?: string;
+    ordenar_por?: string;
+    direcao?: 'asc' | 'desc';
+    [key: string]: any; // Permite os filtros dinâmicos (esta_ativo, sexo, uf, etc.)
+};
+
+const montarQuery = (params: ParamsBusca): string => {
+    const q = new URLSearchParams();
+
+    q.append('por_pag', String(params.por_pag ?? POR_PAG_PADRAO));
+    q.append('page', String(params.page ?? PAGE_PADRAO));
+
+    if (params.busca) q.append('busca', params.busca);
+    if (params.ordenar_por) q.append('ordenar_por', params.ordenar_por);
+    if (params.direcao) q.append('direcao', params.direcao);
+
+    // Adiciona os filtros dinamicamente
+    Object.keys(params).forEach((key) => {
+        if (!['por_pag', 'page', 'busca', 'ordenar_por', 'direcao'].includes(key)) {
+            const valor = params[key];
+            if (valor !== undefined && valor !== null) {
+                q.append(key, String(valor));
+            }
+        }
+    });
+
+    return '?' + q.toString();
+};
 
 export const rotasApi = {
-    index: BASE_URL_API,
-    cursos: BASE_URL_API+'cursos/',
-    cursosBusca: BASE_URL_API+'cursos/?busca=',
-    verificarCredenciais: BASE_URL_API + 'alunos/verificarCredenciais',
-    buscarPerguntas: ( idAssunto: number) =>
-        BASE_URL_API + 'assuntos/' + idAssunto + '/perguntas/',
-    buscarPontuacao: ( idAssunto: number) =>
-        BASE_URL_API + 'alunos/pontuacoes/?id_assunto=' + idAssunto,
-    enviarResposta: BASE_URL_API+'alunos/respostas/',
-    imagensCursos: BASE_URL_API+'img/cursos/',
-    imagensPerguntas: BASE_URL_API+'img/perguntas/',
-    professores: BASE_URL_API+'professores/',
-    cursosProfessor: ( idProfessor: number ) =>
-        BASE_URL_API + 'professores/' + idProfessor + '/cursos/',
-    assuntosCurso: ( idCurso: number ) =>
-        BASE_URL_API + 'cursos/' + idCurso + '/assuntos/',
-    perguntas: BASE_URL_API+'perguntas/',
-    usuarios: BASE_URL_API+'usuarios/',
-    usuariosBusca: ( busca: string ) =>
-        BASE_URL_API+'usuarios/?busca=' + busca,
-    login: BASE_URL_API+'login/',
-    rankingPorPontuacaoGeral: (busca: string) =>
-        BASE_URL_API + 'relatorios/rankingPorPontuacaoGeral?busca=' + busca,
-    rankingAlunosPorCurso: (busca: string) =>
-        BASE_URL_API + 'relatorios/rankingAlunosPorCurso?busca=' + busca,
-    numeroDeAlunosPorCurso:
-    BASE_URL_API + 'relatorios/numeroDeAlunosPorCurso',
-    quizAleatorio: BASE_URL_API+'alunos/quizAleatorio/', 
+    atleta: {
+        index: {
+            url: (params?: ParamsBusca) => BASE_URL_API + 'atletas' + montarQuery(params ?? {}),
+            metodo: MetodoHttp.GET,
+        },
+        store: {
+            url: BASE_URL_API + 'atletas',
+            metodo: MetodoHttp.POST,
+        },
+        show: {
+            url: (id: number) => BASE_URL_API + `atletas/${id}`,
+            metodo: MetodoHttp.GET,
+        },
+        update: {
+            url: (id: number) => BASE_URL_API + `atletas/${id}`,
+            metodo: MetodoHttp.PUT,
+        },
+        destroy: {
+            url: (id: number) => BASE_URL_API + `atletas/${id}`,
+            metodo: MetodoHttp.DELETE,
+        },
+    },
+
+    cep: {
+        index: {
+            url: (params?: ParamsBusca) => BASE_URL_API + 'ceps' + montarQuery(params ?? {}),
+            metodo: MetodoHttp.GET,
+        },
+        store: {
+            url: BASE_URL_API + 'ceps',
+            metodo: MetodoHttp.POST,
+        },
+        buscarPorCep: {
+            url: (cep: string) => BASE_URL_API + `ceps/buscar/${cep}`,
+            metodo: MetodoHttp.GET,
+        },
+        show: {
+            url: (id: number) => BASE_URL_API + `ceps/${id}`,
+            metodo: MetodoHttp.GET,
+        },
+        update: {
+            url: (id: number) => BASE_URL_API + `ceps/${id}`,
+            metodo: MetodoHttp.PUT,
+        },
+        destroy: {
+            url: (id: number) => BASE_URL_API + `ceps/${id}`,
+            metodo: MetodoHttp.DELETE,
+        },
+    },
+
+    deficiencia: {
+        index: {
+            url: (params?: ParamsBusca) => BASE_URL_API + 'deficiencias' + montarQuery(params ?? {}),
+            metodo: MetodoHttp.GET,
+        },
+        store: {
+            url: BASE_URL_API + 'deficiencias',
+            metodo: MetodoHttp.POST,
+        },
+        show: {
+            url: (id: number) => BASE_URL_API + `deficiencias/${id}`,
+            metodo: MetodoHttp.GET,
+        },
+        update: {
+            url: (id: number) => BASE_URL_API + `deficiencias/${id}`,
+            metodo: MetodoHttp.PUT,
+        },
+        destroy: {
+            url: (id: number) => BASE_URL_API + `deficiencias/${id}`,
+            metodo: MetodoHttp.DELETE,
+        },
+        atletas: {
+            url: (id: number, params?: ParamsBusca) => BASE_URL_API + `deficiencias/${id}/atletas` + montarQuery(params ?? {}),
+            metodo: MetodoHttp.GET,
+        },
+    },
+
+    modalidade: {
+        index: {
+            url: (params?: ParamsBusca) => BASE_URL_API + 'modalidades' + montarQuery(params ?? {}),
+            metodo: MetodoHttp.GET,
+        },
+        store: {
+            url: BASE_URL_API + 'modalidades',
+            metodo: MetodoHttp.POST,
+        },
+        show: {
+            url: (id: number) => BASE_URL_API + `modalidades/${id}`,
+            metodo: MetodoHttp.GET,
+        },
+        update: {
+            url: (id: number) => BASE_URL_API + `modalidades/${id}`,
+            metodo: MetodoHttp.PUT,
+        },
+        destroy: {
+            url: (id: number) => BASE_URL_API + `modalidades/${id}`,
+            metodo: MetodoHttp.DELETE,
+        },
+        atletas: {
+            url: (id: number, params?: ParamsBusca) => BASE_URL_API + `modalidades/${id}/atletas` + montarQuery(params ?? {}),
+            metodo: MetodoHttp.GET,
+        },
+    },
+
+    tipoDeficiencia: {
+        index: {
+            url: (params?: ParamsBusca) => BASE_URL_API + 'tipos-deficiencias' + montarQuery(params ?? {}),
+            metodo: MetodoHttp.GET,
+        },
+        store: {
+            url: BASE_URL_API + 'tipos-deficiencias',
+            metodo: MetodoHttp.POST,
+        },
+        show: {
+            url: (id: number) => BASE_URL_API + `tipos-deficiencias/${id}`,
+            metodo: MetodoHttp.GET,
+        },
+        update: {
+            url: (id: number) => BASE_URL_API + `tipos-deficiencias/${id}`,
+            metodo: MetodoHttp.PUT,
+        },
+        destroy: {
+            url: (id: number) => BASE_URL_API + `tipos-deficiencias/${id}`,
+            metodo: MetodoHttp.DELETE,
+        },
+        deficiencias: {
+            url: (id: number, params?: ParamsBusca) => BASE_URL_API + `tipos-deficiencias/${id}/deficiencias` + montarQuery(params ?? {}),
+            metodo: MetodoHttp.GET,
+        },
+    },
 };
 
 export const rotasPaginas = {
-    listagemCursos: BASE_URL_WEB,
-    quiz: BASE_URL_WEB+'pages/quiz.html',
-    erro: BASE_URL_WEB+'pages/erro.html',
-    rankingAlunos: BASE_URL_WEB+'pages/ranking-alunos.html',
-    cadastroUsuario: BASE_URL_WEB+'pages/cadastro-usuario.html',
-    listagemUsuarios: BASE_URL_WEB+'pages/listagem-usuario.html',
-    cadastroPerguntas: BASE_URL_WEB+'pages/cadastro-perguntas.html',
-    listagemPerguntas: BASE_URL_WEB+'pages/listagem-perguntas.html',
-    numeroDeAlunosPorCurso: BASE_URL_WEB+'pages/alunos-cursos.html'
-};
-
-export const rotasJsonServer = {
-    index: BASE_URL_JSON_SERVER,
-    cursos: BASE_URL_JSON_SERVER+'cursos/',
-    perguntas: BASE_URL_JSON_SERVER+'perguntas/',
-    professores: BASE_URL_JSON_SERVER+'professores/',
-    perguntasListagem: BASE_URL_JSON_SERVER+'perguntasListagem/'
-}
+    listagem: {
+        atletas:             '/pages/listagem.html?entidade=atletas',
+        modalidades:         '/pages/listagem.html?entidade=modalidades',
+        'tipos-deficiencias':'/pages/listagem.html?entidade=tipos-deficiencias',
+        deficiencias:        '/pages/listagem.html?entidade=deficiencias',
+        ceps:                '/pages/listagem.html?entidade=ceps',
+    },
+} as const;
