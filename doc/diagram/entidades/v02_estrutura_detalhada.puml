@@ -10,10 +10,11 @@ skinparam linetype ortho
 skinparam roundCorner 20
 skinparam padding 3
 skinparam shadowing true
-skinparam backgroundColor transparent
+skinparam backgroundColor white
 skinparam nodesep 80
 skinparam ranksep 100
-skinparam ArrowColor #c89bf3
+skinparam ArrowColor #39145c
+skinparam classArrowFontColor black
 
 hide methods
 hide stereotypes
@@ -69,9 +70,12 @@ entity atletas {
     endereco_cidade : VARCHAR(200)
     endereco_uf : CHAR(2)
     validade_termo_imagem : DATE
+    data_emissao_atestado : DATE
+    data_vencimento_atestado : DATE
     cuidados_especiais : VARCHAR(300)
     esta_ativo : TINYINT(1) NOT NULL DEFAULT 1
     inativado_em : TIMESTAMP NULL
+    motivo_inatividade : VARCHAR(100)
 }
 
 entity atletas_modalidades {
@@ -80,7 +84,6 @@ entity atletas_modalidades {
     atleta_id : BIGINT UNSIGNED NOT NULL
     modalidade_id : BIGINT UNSIGNED NOT NULL
     classe : VARCHAR(100)
-    validade_atestado : DATE
     UNIQUE (atleta_id, modalidade_id)
 }
 

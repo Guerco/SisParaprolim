@@ -1,0 +1,136 @@
+@startuml
+
+!theme cyborg-outline
+
+left to right direction
+skinparam defaultFontSize 15
+skinparam defaultFontName Arial
+skinparam arrowThickness 2
+skinparam linetype ortho
+skinparam roundCorner 20
+skinparam padding 3
+skinparam shadowing true
+skinparam backgroundColor white
+skinparam nodesep 80
+skinparam ranksep 100
+skinparam ArrowColor #39145c
+skinparam classArrowFontColor black
+
+hide methods
+hide stereotypes
+
+skinparam class {
+    BorderThickness 2
+    BorderColor #1f0636
+
+    AttributeFontColor black
+    AttributeFontStyle plain
+    BackgroundColor #e9c8f8-#cb78f1
+}
+
+<style>
+classDiagram {
+    class {
+        header {
+            BackgroundColor #400c70
+            FontColor white
+            FontStyle bold
+        }
+    }
+}
+</style>
+
+entity atletas {
+    * **id** : **BIGINT UNSIGNED AUTO_INCREMENT**
+    --
+    num_cad : CHAR(6) UNIQUE
+    nome : VARCHAR(200) NOT NULL
+    data_nascimento : DATE
+    uf_nascimento : CHAR(2)
+    sexo : ENUM('M','F') NOT NULL
+    estado_civil : CHAR(1)
+    data_admissao : DATE NOT NULL DEFAULT CURRENT_DATE
+    telefone_1 : VARCHAR(11)
+    telefone_2 : VARCHAR(11)
+    email : VARCHAR(100)
+    nis : CHAR(11) UNIQUE
+    cpf : CHAR(11) NOT NULL UNIQUE
+    org_expedidor_documento : VARCHAR(50)
+    uf_registro_documento : CHAR(2)
+    data_expedicao_documento : DATE
+    nome_mae : VARCHAR(200)
+    nome_pai : VARCHAR(200)
+    responsavel : VARCHAR(20)
+    cpf_responsavel : CHAR(11)
+    endereco_cep : CHAR(8)
+    endereco_logradouro : VARCHAR(200)
+    endereco_numero : VARCHAR(20)
+    endereco_complemento : VARCHAR(200)
+    endereco_bairro : VARCHAR(200)
+    endereco_cidade : VARCHAR(200)
+    endereco_uf : CHAR(2)
+    validade_termo_imagem : DATE
+    cuidados_especiais : VARCHAR(300)
+    esta_ativo : TINYINT(1) NOT NULL DEFAULT 1
+    inativado_em : TIMESTAMP NULL
+}
+
+entity atletas_modalidades {
+    * **id** : **BIGINT UNSIGNED AUTO_INCREMENT**
+    --
+    atleta_id : BIGINT UNSIGNED NOT NULL
+    modalidade_id : BIGINT UNSIGNED NOT NULL
+    classe : VARCHAR(100)
+    validade_atestado : DATE
+    UNIQUE (atleta_id, modalidade_id)
+}
+
+entity modalidades {
+    * **id** : **BIGINT UNSIGNED AUTO_INCREMENT**
+    --
+    nome : VARCHAR(200) NOT NULL
+}
+
+entity atletas_deficiencias {
+    * **id** : **BIGINT UNSIGNED AUTO_INCREMENT**
+    --
+    atleta_id : BIGINT UNSIGNED NOT NULL
+    deficiencia_id : BIGINT UNSIGNED NOT NULL
+    possui_laudo : TINYINT(1) NOT NULL DEFAULT 0
+    UNIQUE (atleta_id, deficiencia_id)
+}
+
+entity deficiencias {
+    * **id** : **BIGINT UNSIGNED AUTO_INCREMENT**
+    --
+    cid_10 : VARCHAR(10) NOT NULL UNIQUE
+    descricao_deficiencia : VARCHAR(200) NOT NULL
+    tipo_deficiencia_id : BIGINT UNSIGNED NOT NULL
+}
+
+entity tipos_deficiencias {
+    * **id** : **BIGINT UNSIGNED AUTO_INCREMENT**
+    --
+    tipo : CHAR(2) NOT NULL UNIQUE
+    descricao : VARCHAR(100) NOT NULL UNIQUE
+}
+
+entity ceps {
+    * **id** : **BIGINT UNSIGNED AUTO_INCREMENT**
+    --
+    cep : CHAR(8) NOT NULL UNIQUE
+    logradouro : VARCHAR(200) NOT NULL
+    bairro : VARCHAR(200) NOT NULL
+    cidade : VARCHAR(200) NOT NULL
+    uf : CHAR(2) NOT NULL DEFAULT 'RJ'
+}
+
+atletas ||--o{ atletas_modalidades : "possui"
+modalidades ||--o{ atletas_modalidades : "vinculada a"
+
+atletas ||--o{ atletas_deficiencias : "possui"
+deficiencias ||--o{ atletas_deficiencias : "vinculada a"
+
+tipos_deficiencias ||--o{ deficiencias : "classifica"
+
+@enduml

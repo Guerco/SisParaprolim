@@ -10,7 +10,7 @@ skinparam linetype ortho
 skinparam roundCorner 30
 skinparam padding 3
 skinparam shadowing true
-skinparam backgroundColor transparent
+skinparam backgroundColor white
 skinparam nodesep 80
 skinparam ranksep 100
 skinparam ArrowColor #4189cc
@@ -69,9 +69,12 @@ entity atletas {
     endereco_cidade
     endereco_uf
     validade_termo_imagem
+    data_emissao_atestado
+    data_vencimento_atestado
     cuidados_especiais
     esta_ativo
     inativado_em
+    motivo_inatividade
 }
 
 entity atletas_modalidades {
@@ -80,7 +83,6 @@ entity atletas_modalidades {
     atleta_id
     modalidade_id
     classe
-    validade_atestado
 }
 
 entity modalidades {

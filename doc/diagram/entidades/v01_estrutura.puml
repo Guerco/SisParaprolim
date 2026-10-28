@@ -1,0 +1,133 @@
+@startuml
+
+!theme cyborg-outline
+
+left to right direction
+skinparam defaultFontSize 15
+skinparam defaultFontName Arial
+skinparam arrowThickness 3
+skinparam linetype ortho
+skinparam roundCorner 30
+skinparam padding 3
+skinparam shadowing true
+skinparam backgroundColor white
+skinparam nodesep 80
+skinparam ranksep 100
+skinparam ArrowColor #053561
+
+hide methods
+hide stereotypes
+
+skinparam class {
+    BorderThickness 2
+    BorderColor #2A9FD6
+
+    AttributeFontColor black
+    AttributeFontStyle plain
+    BackgroundColor #78bff1-#D6EAF8
+}
+
+<style>
+classDiagram {
+    class {
+        header {
+            BackgroundColor #0c5070
+            FontColor black
+            FontStyle bold
+        }
+    }
+}
+</style>
+
+entity atletas {
+    * **id**
+    --
+    num_cad
+    nome
+    data_nascimento
+    uf_nascimento
+    sexo
+    estado_civil
+    data_admissao
+    telefone_1
+    telefone_2
+    email
+    nis
+    cpf
+    org_expedidor_documento
+    uf_registro_documento
+    data_expedicao_documento
+    nome_mae
+    nome_pai
+    responsavel
+    cpf_responsavel
+    endereco_cep
+    endereco_logradouro
+    endereco_numero
+    endereco_complemento
+    endereco_bairro
+    endereco_cidade
+    endereco_uf
+    validade_termo_imagem
+    cuidados_especiais
+    esta_ativo
+    inativado_em
+}
+
+entity atletas_modalidades {
+    * **id**
+    --
+    atleta_id
+    modalidade_id
+    classe
+    validade_atestado
+}
+
+entity modalidades {
+    * **id**
+    --
+    nome
+}
+
+entity atletas_deficiencias {
+    * **id**
+    --
+    atleta_id
+    deficiencia_id
+    possui_laudo
+}
+
+entity deficiencias {
+    * **id**
+    --
+    cid_10
+    descricao_deficiencia
+    tipo_deficiencia_id
+}
+
+entity tipos_deficiencias {
+    * **id**
+    --
+    tipo
+    descricao
+}
+
+entity ceps {
+    * **id**
+    --
+    cep
+    logradouro
+    bairro
+    cidade
+    uf
+}
+
+atletas ||--o{ atletas_modalidades
+modalidades ||--o{ atletas_modalidades
+
+atletas ||--o{ atletas_deficiencias
+deficiencias ||--o{ atletas_deficiencias
+
+tipos_deficiencias ||--o{ deficiencias
+
+@enduml
