@@ -19,11 +19,17 @@ class DeficienciaService
 
     public function getAll(Request $request)
     {
-        $perPage = (int) $request->input('por_pag', 15);
-        $perPage = min(max($perPage, 1), 100);
+        $semPaginacao = filter_var($request->query('paginacao', 'true'), FILTER_VALIDATE_BOOLEAN) === false;
 
         $query = $this->aplicarFiltrosGetAll(Deficiencia::query(), $request);
         $query = $this->aplicarOrdenacaoGetAll($query, $request);
+
+        if ($semPaginacao) {
+            return DeficienciaListagemResource::collection($query->get());
+        }
+
+        $perPage = (int) $request->input('por_pag', 15);
+        $perPage = min(max($perPage, 1), 100);
 
         $deficiencias = $query
             ->with('tipoDeficiencia')
