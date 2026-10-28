@@ -9,3 +9,11 @@ export function listarAtletas(params?: ParamsAtletaIndex) {
         params,
     );
 }
+
+export async function listarTodosAtletas(params?: ParamsAtletaIndex) {
+    const { page, por_pag, ...resto } = params || {};
+    return http.get<PaginacaoResposta<AtletaListagem>>(rotas.atleta.index, {
+        ...resto,
+        paginacao: false
+    });
+}

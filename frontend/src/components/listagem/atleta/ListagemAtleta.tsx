@@ -10,6 +10,8 @@ import type PaginacaoResposta from '../../../types/PaginacaoResposta';
 import type AtletaListagem from '../../../types/entidades/atleta/AtletaListagem';
 import { useState } from 'react';
 import type { ParamsAtletaIndex } from '../../../api/rotas';
+import ModalExportar from '../ModalExportar';
+import { listarTodosAtletas } from '../../../services/AtletaService';
 
 const PLACEHOLDER_BUSCA = "Buscar por Nome, CPF ou Número Cadastro";
 const OPCOES_ORDENACAO = [
@@ -107,6 +109,25 @@ export default function ListagemAtleta(
         aoAplicar({ ...aplicado, por_pag: porPagina, page: 1 });
     }
 
+    const [modalExportarAberto, setModalExportarAberto] = useState(false);
+    const [dadosExportacao, setDadosExportacao] = useState<AtletaListagem[]>([]);
+    const [gerandoRelatorio, setGerandoRelatorio] = useState(false);
+    const [tituloRelatorio, setTituloRelatorio] = useState('Relatório de Atletas');
+
+    async function prepararExportacao() {
+        setGerandoRelatorio(true);
+        try {
+            const resposta = await listarTodosAtletas(aplicado);
+            setDadosExportacao(resposta.data);
+            setModalExportarAberto(true);
+        } catch (error) {
+            console.error("Erro ao buscar dados para exportação", error);
+            alert("Erro ao gerar relatório. Tente novamente.");
+        } finally {
+            setGerandoRelatorio(false);
+        }
+    }
+
     return <div className="container-listagem">
         <h2 className="titulo">Listagem de Atletas</h2>
 
@@ -150,12 +171,25 @@ export default function ListagemAtleta(
                 />
             </form>
 
-            <Tabela atletas={paginacao.data} carregando={carregando} />
+            <Tabela
+                atletas={paginacao.data}
+                carregando={carregando}
+                aoExportar={prepararExportacao}
+                gerandoRelatorio={gerandoRelatorio}
+            />
 
             <Paginacao
                 meta={paginacao.meta}
                 aoMudarPagina={aoMudarPagina}
                 aoMudarPorPagina={aoMudarPorPagina}
+            />
+
+            <ModalExportar
+                aberto={modalExportarAberto}
+                titulo={tituloRelatorio}
+                aoMudarTitulo={setTituloRelatorio}
+                aoFechar={() => setModalExportarAberto(false)}
+                dados={dadosExportacao}
             />
         </div>
     </div>;

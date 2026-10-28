@@ -5,6 +5,7 @@ export interface ParamsQueryBase {
     busca?: string;
     ordenar_por?: string;
     direcao?: "asc" | "desc";
+    paginacao?: boolean;
 }
 
 // ─── Tipos de parâmetros por endpoint (documentação) ───────────────

@@ -1,15 +1,18 @@
 import type AtletaListagem from "../../../types/entidades/atleta/AtletaListagem";
 import LinhaTabela from "./LinhaTabela";
+import BotaoExportar from "../BotaoExportar";
 
 interface TabelaProps {
     atletas: AtletaListagem[];
     carregando: boolean;
+    aoExportar: () => void | Promise<void>;
+    gerandoRelatorio?: boolean;
 }
 
 const COLUNAS = 7;
 
 export default function Tabela(
-    { atletas, carregando }: TabelaProps
+    { atletas, carregando, aoExportar, gerandoRelatorio }: TabelaProps
 ) {
     return (
         <div className="tabela-container">
@@ -43,6 +46,14 @@ export default function Tabela(
                     )}
                 </tbody>
             </table>
+            
+            {/* O botão fica dentro do container da tabela, flutuando no canto inferior direito visível */}
+            {!carregando && atletas.length > 0 && (
+                <BotaoExportar 
+                    aoClicar={aoExportar} 
+                    carregando={gerandoRelatorio} 
+                />
+            )}
         </div>
     );
 }

@@ -67,7 +67,7 @@ const GrupoOrdenacao = (
                 {opcoesOrdenacao.map((o) => <option key={o.campo} value={o.campo}>{o.label}</option>)}
             </select>
             <button
-                className="botao botao--primario botao-direcao"
+                className="botao botao--secundario botao-direcao"
                 type="button"
                 title="Alternar direção de ordenação"
                 aria-label={`Ordem ${direcao === 'asc' ? 'crescente' : 'decrescente'}, clique para alternar`}

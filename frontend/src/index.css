@@ -9,6 +9,9 @@
     --primaria-hover: #354f6d;
     --destaque: #4d8ac5;
 
+    --secundario: #f97316;
+    --secundario-hover: #ea580c;
+
     /* superfícies */
     --fundo-pagina: #f3f5f7;
     --superficie: #ffffff;
@@ -182,6 +185,18 @@ select.campo {
 .botao--primario:hover:not(:disabled) {
     background-color: var(--primaria-hover);
     border-color: var(--primaria);
+    color: #ffffff;
+}
+
+.botao--secundario {
+    background-color: var(--secundario);
+    border-color: var(--secundario);
+    color: #ffffff;
+}
+
+.botao--secundario:hover:not(:disabled) {
+    background-color: var(--secundario-hover);
+    border-color: var(--secundario);
     color: #ffffff;
 }
 
