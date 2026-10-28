@@ -21,6 +21,7 @@ class AtletaListagemResource extends JsonResource
             'cpf' => $this->cpf,
             'sexo' => $this->sexo,
             'data_nascimento' => $this->data_nascimento?->format('Y-m-d'),
+            'data_vencimento_atestado' => $this->data_vencimento_atestado?->format('Y-m-d'),
             'esta_ativo' => $this->esta_ativo,
         ];
     }

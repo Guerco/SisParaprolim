@@ -13,11 +13,11 @@ class AtletaModalidade extends Model
         'atleta_id',
         'modalidade_id',
         'classe',
-        'validade_atestado',
+        // 'validade_atestado',
     ];
 
     protected $casts = [
-        'validade_atestado' => 'date',
+        // 'validade_atestado' => 'date',
     ];
 
     public $timestamps = false;

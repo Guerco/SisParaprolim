@@ -13,6 +13,10 @@ class AtletaFactory extends Factory
 {
     public function definition(): array
     {
+        $estaAtivo = $this->faker->boolean(80);
+        $dataEmissao = $this->faker->dateTimeBetween('-2 years', 'now');
+        $dataVencimento = (clone $dataEmissao)->modify('+1 year');
+
         return [
             'nome' => $this->faker->name(),
             'data_nascimento' => $this->faker->dateTimeBetween('-60 years', '-10 years')->format('Y-m-d'),
@@ -40,9 +44,12 @@ class AtletaFactory extends Factory
             'endereco_cidade' => $this->faker->city(),
             'endereco_uf' => $this->faker->stateAbbr(),
             'validade_termo_imagem' => $this->faker->dateTimeBetween('now', '+1 year')->format('Y-m-d'),
+            'data_emissao_atestado' => $dataEmissao->format('Y-m-d'),
+            'data_vencimento_atestado' => $dataVencimento->format('Y-m-d'),
             'cuidados_especiais' => $this->faker->optional()->sentence(),
-            'esta_ativo' => $this->faker->boolean(80),
-            'inativado_em' => null,
+            'esta_ativo' => $estaAtivo,
+            'motivo_inatividade' => $estaAtivo ? null : $this->faker->sentence(),
+            'inativado_em' => $estaAtivo ? null : $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }
 

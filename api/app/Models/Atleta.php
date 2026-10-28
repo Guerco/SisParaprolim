@@ -41,9 +41,12 @@ class Atleta extends Model
         'endereco_cidade',
         'endereco_uf',
         'validade_termo_imagem',
+        'data_emissao_atestado',
+        'data_vencimento_atestado',
         'cuidados_especiais',
-        // 'esta_ativo',
-        // 'inativado_em',
+        'esta_ativo',
+        'inativado_em',
+        'motivo_inatividade',
     ];
 
     protected $casts = [
@@ -51,6 +54,8 @@ class Atleta extends Model
         'data_admissao' => 'date',
         'data_expedicao_documento' => 'date',
         'validade_termo_imagem' => 'date',
+        'data_emissao_atestado' => 'date',
+        'data_vencimento_atestado' => 'date',
         'validade_atestado' => 'date',
         'esta_ativo' => 'boolean',
         'inativado_em' => 'datetime',
@@ -67,7 +72,8 @@ class Atleta extends Model
     public function modalidades(): BelongsToMany
     {
         return $this->belongsToMany(Modalidade::class, 'atletas_modalidades')
-            ->withPivot('classe', 'validade_atestado');
+            // ->withPivot('classe', 'validade_atestado');
+            ->withPivot('classe');
     }
 
     public function atletaDeficiencias(): HasMany

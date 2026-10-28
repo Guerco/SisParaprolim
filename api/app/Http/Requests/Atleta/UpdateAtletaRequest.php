@@ -38,6 +38,9 @@ class UpdateAtletaRequest extends FormRequest
             'endereco_cidade',
             'endereco_uf',
             'cuidados_especiais',
+            // 'esta_ativo',
+            // 'inativado_em',
+            'motivo_inatividade',
         ];
 
         foreach ($campos as $campo) {
@@ -90,6 +93,10 @@ class UpdateAtletaRequest extends FormRequest
             $dados['estado_civil'] = strtoupper(trim($this->estado_civil ?? ''));
         }
 
+        if ($this->has('motivo_inatividade')) {
+            $dados['motivo_inatividade'] = strtoupper(trim($this->motivo_inatividade ?? ''));
+        }
+
         $this->merge($dados);
     }
 
@@ -130,7 +137,14 @@ class UpdateAtletaRequest extends FormRequest
             'endereco_uf' => ['sometimes', 'nullable', 'string', 'size:2'],
 
             'validade_termo_imagem' => ['sometimes', 'nullable', 'date', 'date_format:Y-m-d'],
+            'data_emissao_atestado' => ['sometimes', 'nullable', 'date', 'date_format:Y-m-d'],
+            'data_validade_atestado' => ['sometimes', 'nullable', 'date', 'date_format:Y-m-d'],
+
             'cuidados_especiais' => ['sometimes', 'nullable', 'string', 'max:300'],
+
+            'esta_ativo' => ['sometimes', 'boolean'],
+            'motivo_inatividade' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'inativado_em' => ['sometimes', 'nullable', 'date', 'date_format:Y-m-d'],
 
             'deficiencias' => ['nullable', 'array'],
             'deficiencias.*.deficiencia_id' => ['required', 'integer', 'exists:deficiencias,id'],
@@ -139,7 +153,7 @@ class UpdateAtletaRequest extends FormRequest
             'modalidades' => ['nullable', 'array'],
             'modalidades.*.modalidade_id' => ['required', 'integer', 'exists:modalidades,id'],
             'modalidades.*.classe' => ['nullable', 'string', 'max:100'],
-            'modalidades.*.validade_atestado' => ['nullable', 'date', 'date_format:Y-m-d'],
+            // 'modalidades.*.validade_atestado' => ['nullable', 'date', 'date_format:Y-m-d'],
         ];
     }
 
@@ -200,7 +214,19 @@ class UpdateAtletaRequest extends FormRequest
             'validade_termo_imagem.date' => 'A validade do termo de imagem deve ser uma data válida.',
             'validade_termo_imagem.date_format' => 'A validade do termo de imagem deve seguir o formato \'AAAA-mm-dd\'.',
 
+            'data_emissao_atestado.date' => 'A data de emissão do atestado deve ser uma data válida.',
+            'data_emissao_atestado.date_format' => 'A data de emissão do atestado deve seguir o formato \'AAAA-mm-dd\'.',
+
+            'data_vencimento_atestado.date' => 'A data de vencimento do atestado deve ser uma data válida.',
+            'data_vencimento_atestado.date_format' => 'A data de vencimento do atestado deve seguir o formato \'AAAA-mm-dd\'.',
+
             'cuidados_especiais.max' => 'Os cuidados especiais devem possuir no máximo 300 caracteres.',
+
+            'esta_ativo.boolean' => 'O campo "ativo" deve ser verdadeiro ou falso.',
+            'motivo_inatividade.string' => 'O motivo da inatividade deve ser um texto válido.',
+            'motivo_inatividade.max' => 'O motivo da inatividade deve possuir no máximo 100 caracteres.',
+            'inativado_em.date' => 'A data de inativação deve ser uma data válida.',
+            'inativado_em.date_format' => 'A data de inativação deve seguir o formato \'AAAA-mm-dd\'.',
 
             'deficiencias.array' => 'As deficiências devem ser uma lista.',
             'deficiencias.*.deficiencia_id.required' => 'O ID da deficiência não foi informado.',
@@ -212,8 +238,8 @@ class UpdateAtletaRequest extends FormRequest
             'modalidades.*.modalidade_id.required' => 'O ID da modalidade não foi informado.',
             'modalidades.*.modalidade_id.exists' => 'Não há modalidade com o ID informado.',
             'modalidades.*.classe.max' => 'A classe deve possuir no máximo 100 caracteres.',
-            'modalidades.*.validade_atestado.date' => 'A validade do atestado deve ser uma data válida.',
-            'modalidades.*.validade_atestado.date_format' => 'A validade do atestado deve seguir o formato \'AAAA-mm-dd\'.',
+            // 'modalidades.*.validade_atestado.date' => 'A validade do atestado deve ser uma data válida.',
+            // 'modalidades.*.validade_atestado.date_format' => 'A validade do atestado deve seguir o formato \'AAAA-mm-dd\'.',
         ];
     }
 }

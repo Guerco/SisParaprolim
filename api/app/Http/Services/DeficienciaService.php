@@ -37,6 +37,24 @@ class DeficienciaService
     {
         $busca = trim((string) $request->input('busca', ''));
 
+        // Filtro especial: ?tipo=DF|DA|DV|DI (via join em tipos_deficiencias.tipo)
+        $tipo = $request->query('tipo');
+
+        if ($tipo !== null) {
+            $tipo = strtoupper(trim((string) $tipo));
+
+            if (in_array($tipo, ['DF', 'DA', 'DV', 'DI'], true)) {
+                $query->join(
+                    'tipos_deficiencias',
+                    'tipos_deficiencias.id',
+                    '=',
+                    'deficiencias.tipo_deficiencia_id'
+                )
+                    ->where('tipos_deficiencias.tipo', $tipo)
+                    ->select('deficiencias.*');
+            }
+        }
+
         $filtros = DeficienciaListagemConfig::filtraveis();
 
         // Aplica os filtros dinamicamente
@@ -71,7 +89,7 @@ class DeficienciaService
             $busca !== '' && !empty($camposBusca),
             fn($q) => $q->where(function ($q) use ($busca, $camposBusca) {
                 $termo = '%' . addcslashes($busca, '%_\\') . '%';
-                
+
                 foreach ($camposBusca as $indice => $campo) {
                     if ($indice === 0) {
                         $q->where($campo, 'like', $termo);

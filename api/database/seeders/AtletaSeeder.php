@@ -9,7 +9,7 @@ class AtletaSeeder extends Seeder
 {
     public function run(): void
     {
-        $qtd = 20;
+        $qtd = 100;
 
         $atletas = Atleta::factory($qtd)->create();
 

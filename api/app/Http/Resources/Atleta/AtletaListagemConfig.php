@@ -7,17 +7,18 @@ class AtletaListagemConfig
     public static function ordenaveis(): array
     {
         return [
-            'id',
+            // 'id',
             'num_cad',
             'nome',
             'data_nascimento',
+            'data_vencimento_atestado',
         ];
     }
 
     public static function ordenacaoPadrao(): array
     {
         return [
-            'campo' => 'id',
+            'campo' => 'num_cad',
             'direcao' => 'asc',
         ];
     }
@@ -25,6 +26,7 @@ class AtletaListagemConfig
     public static function filtraveis(): array
     {
         return [
+            'data_vencimento_atestado' => ['tipo' => 'data'],
             'esta_ativo' => ['tipo' => 'boolean', 'opcoes' => [true, false]],
             'sexo' => ['tipo' => 'enum', 'opcoes' => ['M', 'F']],
         ];

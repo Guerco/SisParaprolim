@@ -42,10 +42,12 @@ class AtletaResource extends JsonResource
             'endereco_cidade' => $this->endereco_cidade,
             'endereco_uf' => $this->endereco_uf,
             'validade_termo_imagem' => $this->validade_termo_imagem?->format('Y-m-d'),
-            'validade_atestado' => $this->validade_atestado?->format('Y-m-d'),
+            'data_emissao_atestado' => $this->data_emissao_atestado?->format('Y-m-d'),
+            'data_vencimento_atestado' => $this->data_vencimento_atestado?->format('Y-m-d'),
             'cuidados_especiais' => $this->cuidados_especiais,
             'esta_ativo' => $this->esta_ativo,
             'inativado_em' => $this->inativado_em?->format('Y-m-d H:i:s'),
+            'motivo_inatividade' => $this->motivo_inatividade,
             'deficiencias' => $this->whenLoaded('atletaDeficiencias', function () {
                 return $this->atletaDeficiencias->map(fn ($item) => [
                     'id' => $item->id,
@@ -57,7 +59,7 @@ class AtletaResource extends JsonResource
                 return $this->atletaModalidades->map(fn ($item) => [
                     'id' => $item->id,
                     'classe' => $item->classe,
-                    'validade_atestado' => $item->validade_atestado?->format('Y-m-d'),
+                    // 'validade_atestado' => $item->validade_atestado?->format('Y-m-d'),
                     'modalidade' => new ModalidadeResource($item->modalidade),
                 ]);
             }),

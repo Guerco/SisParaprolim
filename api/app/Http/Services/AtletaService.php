@@ -10,6 +10,7 @@ use App\Http\Resources\Atleta\AtletaResource;
 use App\Models\Atleta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AtletaService
 {
@@ -41,6 +42,11 @@ class AtletaService
 
         // Aplica os filtros dinamicamente
         foreach ($filtros as $campo => $config) {
+            if ($config['tipo'] === 'data') {
+                $this->aplicarFiltroData($query, $campo, $request);
+                continue;
+            }
+
             $valor = $request->query($campo);
 
             if ($valor === null) {
@@ -71,7 +77,7 @@ class AtletaService
             $busca !== '' && !empty($camposBusca),
             fn($q) => $q->where(function ($q) use ($busca, $camposBusca) {
                 $termo = '%' . addcslashes($busca, '%_\\') . '%';
-                
+
                 foreach ($camposBusca as $indice => $campo) {
                     if ($indice === 0) {
                         $q->where($campo, 'like', $termo);
@@ -81,6 +87,55 @@ class AtletaService
                 }
             })
         );
+    }
+
+    private function aplicarFiltroData($query, string $campo, Request $request): void
+    {
+        $maiorQue = $this->lerData($request->query("{$campo}_maior_que"));
+        $menorQue = $this->lerData($request->query("{$campo}_menor_que"));
+        $inclusive = filter_var(
+            $request->query("{$campo}_inclusive", false),
+            FILTER_VALIDATE_BOOLEAN
+        );
+
+        if ($maiorQue === null && $menorQue === null) {
+            return;
+        }
+
+        if ($maiorQue !== null && $menorQue === null) {
+            $query->whereDate($campo, $inclusive ? '>=' : '>', $maiorQue);
+            return;
+        }
+
+        if ($menorQue !== null && $maiorQue === null) {
+            $query->whereDate($campo, $inclusive ? '<=' : '<', $menorQue);
+            return;
+        }
+
+        if ($inclusive) {
+            $query->whereBetween($campo, [$maiorQue, $menorQue]);
+        } else {
+            $query->where($campo, '>', $maiorQue)
+                ->where($campo, '<', $menorQue);
+        }
+    }
+
+    private function lerData($valor): ?string
+    {
+        if ($valor === null || $valor === '') {
+            return null;
+        }
+
+        if ($valor === 'data_atual') {
+            return now()->toDateString();
+        }
+
+        $dt = \DateTimeImmutable::createFromFormat('Y-m-d', (string) $valor);
+        if (!$dt || $dt->format('Y-m-d') !== $valor) {
+            return null;
+        }
+
+        return $dt->format('Y-m-d');
     }
 
     private function aplicarOrdenacaoGetAll($query, Request $request)
@@ -118,6 +173,8 @@ class AtletaService
         DB::transaction(function () use ($request) {
             $dados = $request->validated();
 
+            $this->calcularVencimentoAtestado($dados);
+
             $deficiencias = $dados['deficiencias'] ?? [];
             $modalidades = $dados['modalidades'] ?? [];
 
@@ -137,7 +194,7 @@ class AtletaService
             foreach ($modalidades as $m) {
                 $atleta->modalidades()->attach($m['modalidade_id'], [
                     'classe' => $m['classe'] ?? null,
-                    'validade_atestado' => $m['validade_atestado'] ?? null,
+                    // 'validade_atestado' => $m['validade_atestado'] ?? null,
                 ]);
             }
         });
@@ -153,6 +210,8 @@ class AtletaService
             $atleta = Atleta::findOrFail($id);
 
             $dados = $request->validated();
+
+            $this->calcularVencimentoAtestado($dados, true);
 
             $deficiencias = $dados['deficiencias'] ?? null;
             $modalidades = $dados['modalidades'] ?? null;
@@ -174,12 +233,43 @@ class AtletaService
                 foreach ($modalidades as $m) {
                     $sync[$m['modalidade_id']] = [
                         'classe' => $m['classe'] ?? null,
-                        'validade_atestado' => $m['validade_atestado'] ?? null,
+                        // 'validade_atestado' => $m['validade_atestado'] ?? null,
                     ];
                 }
                 $atleta->modalidades()->sync($sync);
             }
         });
+    }
+
+    private function calcularVencimentoAtestado(array &$dados, bool $edicao = false): void
+    {
+        // Na edição, só recalcula se a data de emissão foi enviada.
+        if ($edicao && !array_key_exists('data_emissao_atestado', $dados)) {
+            return;
+        }
+
+        $dataEmissao = $dados['data_emissao_atestado'] ?? null;
+        $dataVencimento = $dados['data_vencimento_atestado'] ?? null;
+
+        if (!$dataEmissao) {
+            // Se a emissão foi removida, limpa o vencimento
+            // somente quando ele não foi informado separadamente.
+            if (
+                array_key_exists('data_emissao_atestado', $dados)
+                && !array_key_exists('data_vencimento_atestado', $dados)
+            ) {
+                $dados['data_vencimento_atestado'] = null;
+            }
+
+            return;
+        }
+
+        // Calcula se o vencimento não foi informado ou está vazio.
+        if (!$dataVencimento) {
+            $dados['data_vencimento_atestado'] = Carbon::parse($dataEmissao)
+                ->addYear()
+                ->toDateString();
+        }
     }
 
     // =========================================================================
