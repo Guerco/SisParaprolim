@@ -1,0 +1,72 @@
+.sexo,
+.ativo {
+    --tamanho: 26px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: var(--tamanho);
+    height: var(--tamanho);
+    border-radius: 50%;
+    vertical-align: middle;
+    font-size: 0;
+    /* esconde o texto do HTML */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.sexo::before,
+.ativo::before {
+    content: "";
+    width: 60%;
+    height: 60%;
+    background-color: #ffffff;
+    -webkit-mask: var(--icone) center / contain no-repeat;
+    mask: var(--icone) center / contain no-repeat;
+}
+
+.sexo.M {
+    background: linear-gradient(135deg, #4aa3ff, #1565d8);
+    --icone: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10' cy='14' r='5'/%3E%3Cpath d='M13.5 10.5 20 4M15 4h5v5'/%3E%3C/svg%3E");
+}
+
+.sexo.F {
+    background: linear-gradient(135deg, #ff7aa8, #e0245e);
+    --icone: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='9' r='5'/%3E%3Cpath d='M12 14v8M9 18h6'/%3E%3C/svg%3E");
+}
+
+.ativo.sim {
+    background: linear-gradient(135deg, #4cd08a, #17995a);
+    --icone: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5 9.5 17 19 7.5'/%3E%3C/svg%3E");
+}
+
+.ativo.nao {
+    background: linear-gradient(135deg, #a4afbd, #6f7c8c);
+    --icone: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5'/%3E%3C/svg%3E");
+}
+
+.vencimento {
+    display: inline-block;
+    padding: 3px 10px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.vencimento.vencido {
+    background-color: #ffd2be;
+    border-color: #f4a887;
+    color: #b45309;
+}
+
+.vencimento.hoje {
+    background-color: #fff8d6;
+    border-color: #f0dc7a;
+    color: #8a6d00;
+}
+
+.vencimento.em-dia {
+    background-color: #e6f0fd;
+    border-color: #b7d3f5;
+    color: #1d4f91;
+}

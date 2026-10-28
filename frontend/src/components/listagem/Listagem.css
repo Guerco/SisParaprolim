@@ -1,0 +1,478 @@
+/* ==========================================================================
+   Listagem.css
+   Depende do index.css: tokens globais, reset, #root, .pagina e os
+   componentes compartilhados (.campo, .botao, .botao--primario, .grupo-unido).
+
+   1. Container    2. Barra de busca    3. Filtros
+   4. Tabela       5. Paginação         6. Responsivo
+   ========================================================================== */
+
+/* 1. CONTAINER ============================================================= */
+
+.container-listagem {
+    /* tokens usados só pela listagem */
+    --texto-tabela: #37474f;
+    --zebra: #f0f5fa;
+    --hover-linha: #dcecff;
+    --fundo-filtros: #eaf2fb;
+    --divisor: #e2e8ee;
+
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.titulo {
+    margin: 0 0 12px;
+    color: var(--primaria);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* O "painel-listagem" agrupa barra, filtros, tabela e paginação numa única borda.
+   Os divisores entre as partes vêm das regras abaixo, não de cada bloco. */
+.painel-listagem {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    background-color: var(--superficie);
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-grande);
+}
+
+.painel-listagem>*+*,
+.form-listagem>*+* {
+    border-top: 1px solid var(--borda);
+}
+
+/* 2. BARRA DE BUSCA ======================================================== */
+
+.barra-busca {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+}
+
+.barra-busca-controles {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.busca {
+    flex: 1 1 220px;
+    min-width: 180px;
+    max-width: 340px;
+}
+
+.busca .campo {
+    flex: 1;
+    font-size: 14px;
+}
+
+.busca .botao {
+    font-size: 18px;
+}
+
+.ordenacao {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ordenacao label {
+    color: var(--texto-suave);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.ordenacao .campo {
+    min-width: 120px;
+    max-width: 190px;
+}
+
+.botao-direcao {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.botao-filtros {
+    flex-shrink: 0;
+    font-size: 14px;
+}
+
+.botao-filtros .seta {
+    font-size: 12px;
+    transition: transform 0.2s ease;
+}
+
+.botao-filtros[aria-expanded="true"] .seta {
+    transform: rotate(180deg);
+}
+
+/* 3. PAINEL DE FILTROS ===================================================== */
+
+.filtros {
+    --borda-campo: #b9cee4;
+
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    padding: 18px 16px;
+    background-color: var(--fundo-filtros);
+}
+
+.filtros[hidden] {
+    display: none;
+}
+
+.filtro {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+}
+
+.filtro .rotulo {
+    color: var(--primaria);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.filtro .campo {
+    width: 100%;
+}
+
+.opcao {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 38px;
+    padding: 8px 10px;
+    background-color: var(--superficie);
+    border: 1px solid var(--borda-campo);
+    border-radius: var(--raio);
+    color: var(--primaria);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.opcao:hover {
+    background-color: var(--hover-botao);
+    border-color: var(--borda-hover);
+}
+
+.opcao input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--primaria);
+    cursor: pointer;
+}
+
+/* Filtro de intervalo de datas: dois campos dentro de uma única borda. */
+.faixa {
+    display: flex;
+    height: 38px;
+    overflow: hidden;
+    background-color: var(--superficie);
+    border: 1px solid var(--borda-campo);
+    border-radius: var(--raio);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.faixa:focus-within {
+    border-color: var(--destaque);
+    box-shadow: var(--anel-foco);
+}
+
+.faixa .campo,
+.faixa .campo:focus {
+    flex: 1 1 0;
+    width: auto;
+    height: auto;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.faixa .separador {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    padding: 0 10px;
+    background-color: #d9e7f5;
+    border-inline: 1px solid var(--borda-campo);
+    color: var(--primaria);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.filtros-acoes {
+    --altura: 36px;
+
+    display: flex;
+    flex-wrap: wrap;
+    grid-column: 1 / -1;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #c8d9ec;
+}
+
+/* 4. TABELA ================================================================ */
+
+.mensagem {
+    display: block;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--divisor);
+    color: var(--texto-suave);
+    font-size: 13px;
+    text-align: center;
+}
+
+.mensagem:empty {
+    display: none;
+}
+
+.tabela-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+}
+
+.tabela {
+    width: 100%;
+    min-width: 60vw;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.tabela--estado {
+    height: 100%;
+}
+
+.tabela th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 16px 12px;
+    background-color: var(--primaria);
+    border-bottom: 3px solid var(--destaque);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.tabela td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--divisor);
+    color: var(--texto-tabela);
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tabela td[colspan] {
+    height: 100%;
+    vertical-align: middle;
+}
+
+.tabela tbody tr:nth-child(even) {
+    background-color: var(--zebra);
+}
+
+.tabela tbody tr:hover {
+    background-color: var(--hover-linha);
+}
+
+.tabela tbody tr:hover td {
+    color: var(--texto-realce);
+}
+
+.tabela tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabela .centro {
+    text-align: center;
+}
+
+.vazio {
+    padding: 24px 16px;
+    color: var(--texto-suave);
+    font-size: 15px;
+    text-align: center;
+}
+
+/* 5. PAGINAÇÃO ============================================================= */
+
+.paginacao {
+    --altura: 34px;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    background-color: var(--superficie-suave);
+}
+
+.paginacao .info {
+    color: var(--texto-suave);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.por-pagina {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 10px;
+    color: var(--texto-suave);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.por-pagina .campo {
+    width: 68px;
+    padding: 0 8px;
+    text-align: center;
+}
+
+.controles-paginacao {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.paginacao .botao {
+    padding: 0 10px;
+    font-weight: 400;
+}
+
+.input-pagina {
+    width: 56px;
+    padding: 0 5px;
+    text-align: center;
+}
+
+/* 6. RESPONSIVO ============================================================ */
+
+@media (max-width: 850px) {
+    .barra-busca {
+        align-items: stretch;
+    }
+
+    .barra-busca-controles {
+        flex-basis: 100%;
+    }
+
+    .botao-filtros {
+        margin-left: auto;
+    }
+
+    .filtros {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .barra-busca {
+        padding: 12px;
+    }
+
+    .barra-busca-controles {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .busca {
+        flex-basis: auto;
+        width: 100%;
+        max-width: none;
+    }
+
+    .ordenacao {
+        width: 100%;
+    }
+
+    .ordenacao .grupo-unido {
+        flex: 1;
+    }
+
+    .ordenacao .campo {
+        flex: 1;
+        max-width: none;
+    }
+
+    .botao-filtros {
+        justify-content: space-between;
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .filtros {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 14px 12px;
+    }
+
+    .filtros-acoes {
+        grid-column: auto;
+    }
+
+    .tabela th,
+    .tabela td {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+
+    .tabela th {
+        font-size: 11px;
+        letter-spacing: 0;
+    }
+
+    .paginacao {
+        justify-content: center;
+        padding: 10px;
+    }
+
+    .paginacao .info,
+    .controles-paginacao {
+        width: 100%;
+        text-align: center;
+    }
+
+    .paginacao .botao {
+        padding: 0 8px;
+    }
+
+    .por-pagina {
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+    }
+}
