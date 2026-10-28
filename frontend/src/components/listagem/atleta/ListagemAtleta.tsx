@@ -190,6 +190,7 @@ export default function ListagemAtleta(
                 aoMudarTitulo={setTituloRelatorio}
                 aoFechar={() => setModalExportarAberto(false)}
                 dados={dadosExportacao}
+                aplicado={aplicado}
             />
         </div>
     </div>;

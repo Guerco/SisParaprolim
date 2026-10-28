@@ -68,3 +68,29 @@
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
+
+/* ... seus estilos anteriores do modal ... */
+
+.botao-exportar-pdf {
+    background-color: #fef2f2; /* Vermelho bem claro */
+    color: #991b1b; /* Texto vermelho escuro */
+    border: 1px solid #fecaca;
+    font-weight: 600;
+}
+
+.botao-exportar-pdf:hover:not(:disabled) {
+    background-color: #fee2e2;
+    border-color: #fca5a5;
+}
+
+.botao-exportar-csv {
+    background-color: #f0fdf4; /* Verde bem claro */
+    color: #166534; /* Texto verde escuro */
+    border: 1px solid #bbf7d0;
+    font-weight: 600;
+}
+
+.botao-exportar-csv:hover {
+    background-color: #dcfce7;
+    border-color: #86efac;
+}
