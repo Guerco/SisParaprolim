@@ -1,0 +1,252 @@
+/* ==========================================================================
+   Layout.css: cabeçalho, menu lateral e rodapé
+   Depende do index.css (tokens, #root e .pagina/.cartao).
+   ========================================================================== */
+
+/* CABEÇALHO ================================================================ */
+
+.cabecalho {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    padding: 0 20px;
+    background-color: var(--primaria);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.logo-link {
+    display: inline-flex;
+    align-items: center;
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.logo-link img {
+    display: block;
+    width: auto;
+    height: 40px;
+}
+
+.botao-hamburguer {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--raio);
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.botao-hamburguer:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.botao-hamburguer svg {
+    width: 32px;
+    height: 32px;
+}
+
+.botao-hamburguer:focus-visible,
+.menu-link:focus-visible,
+.botao-github:focus-visible,
+.logo-link:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+/* MENU LATERAL ============================================================= */
+
+.menu-fundo {
+    position: fixed;
+    inset: 0;
+    z-index: 19;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.menu-fundo.aberto {
+    opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* Fechado: fora da tela e invisível (visibility tira os itens do alcance do teclado). */
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    max-width: 100%;
+    padding: 0 16px 16px;
+    overflow-y: auto;
+    background-color: var(--primaria);
+    color: #ffffff;
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.25);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.25s ease, visibility 0s linear 0.25s;
+}
+
+.menu-lateral.aberto {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.25s ease;
+}
+
+.menu-topo {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--destaque);
+}
+
+.menu-itens {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.menu-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 12px;
+    background: transparent;
+    border: none;
+    border-radius: var(--raio);
+    color: #ffffff;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.menu-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-link.active {
+    background-color: rgba(255, 255, 255, 0.16);
+}
+
+.menu-seta {
+    font-size: 12px;
+    transition: transform 0.2s ease;
+}
+
+.menu-expansor[aria-expanded="true"] .menu-seta {
+    transform: rotate(180deg);
+}
+
+/* Submenu: abre para baixo animando a altura (0fr → 1fr). */
+.submenu {
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    transition: grid-template-rows 0.25s ease, visibility 0s linear 0.25s;
+}
+
+.submenu.aberto {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transition: grid-template-rows 0.25s ease;
+}
+
+.submenu > .menu-itens {
+    min-height: 0;
+    overflow: hidden;
+}
+
+.submenu .menu-link {
+    padding-left: 28px;
+    font-weight: 400;
+}
+
+/* RODAPÉ =================================================================== */
+
+.rodape {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 6px 20px;
+    background-color: var(--texto-suave);
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.botao-github {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: var(--raio);
+    color: #ffffff;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.botao-github:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: #ffffff;
+}
+
+.botao-github svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* RESPONSIVO E MOVIMENTO =================================================== */
+
+@media (max-width: 600px) {
+    .cabecalho {
+        padding: 0 12px;
+    }
+
+    .rodape {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .menu-lateral {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .menu-lateral,
+    .menu-fundo,
+    .submenu,
+    .menu-seta {
+        transition: none;
+    }
+}
